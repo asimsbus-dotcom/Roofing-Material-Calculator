@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Roofing Supply Text Order Generator - RP Order Ready</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#fff7ed',
+              100: '#ffedd5',
+              400: '#fb923c',
+              500: '#f97316',
+              600: '#ea580c',
+              700: '#c2410c'
+            },
+            surface: {
+              900: '#0b1120',
+              850: '#111b2e',
+              800: '#1e293b',
+              700: '#334155',
+              600: '#475569'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            heading: ['Chakra Petch', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0b1120;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #f97316;
+    }
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none; 
+      margin: 0; 
+    }
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+  </style>
+</head>
+<body class="bg-[#070b14] text-slate-100 min-h-screen font-sans antialiased selection:bg-brand-500 selection:text-white pb-16">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 bg-surface-900/95 backdrop-blur-md border-b border-surface-700/60 px-4 py-3 sm:px-6 shadow-md">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center shadow-lg shadow-brand-500/25 text-white font-heading font-bold text-xl">
+          <i class="fa-solid fa-truck-ramp-box"></i>
+        </div>
+        <div>
+          <h1 class="font-heading font-bold text-base sm:text-xl tracking-tight text-white flex items-center gap-2">
+            ROOFING SUPPLY <span class="text-brand-500">TEXT ORDER</span> GENERATOR
+          </h1>
+          <p class="text-[11px] sm:text-xs text-slate-400">Preformatted text lists for suppliers like RP</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="btnOpenYields" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-surface-800 hover:bg-surface-700 text-slate-300 border border-surface-600 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-sliders text-brand-400"></i>
+          <span class="hidden sm:inline">Coverage Settings</span>
+        </button>
+        <button id="btnReset" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-red-950/40 hover:bg-red-900/60 text-red-300 border border-red-800/50 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-arrows-rotate"></i>
+          <span class="hidden sm:inline">Clear</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 pt-5">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- LEFT COLUMN: Inputs (Job Details, Dimensions, Accessories) -->
+      <div class="lg:col-span-7 space-y-5">
+
+        <!-- 1. Job & Delivery Details -->
+        <section class="bg-surface-850 border border-surface-700/70 rounded-2xl p-4 sm:p-5 shadow-xl">
+          <div class="flex items-center justify-between mb-3.5 border-b border-surface-700/60 pb-2.5">
+            <h2 class="font-heading font-bold text-sm uppercase tracking-wider text-slate-200 flex items-center gap-2">
+              <i class="fa-solid fa-location-dot text-brand-500"></i>
+              1. Job & Drop-Off Details
+            </h2>
+            <span class="text-[11px] text-brand-400 font-semibold bg-brand-500/10 px-2 py-0.5 rounded border border-brand-500/20">RP Format</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">Customer Name <span class="text-brand-500">*</span></label>
+              <div class="relative">
+                <i class="fa-solid fa-user absolute left-3 top-3 text-slate-500 text-xs"></i>
+                <input type="text" id="custName" placeholder="e.g. Miller Residence" class="w-full bg-surface-900 border border-surface-700 rounded-xl pl-8 pr-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500" />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">Job Site Address <span class="text-brand-500">*</span></label>
+              <div class="relative">
+                <i class="fa-solid fa-map-pin absolute left-3 top-3 text-slate-500 text-xs"></i>
+                <input type="text" id="jobAddress" placeholder="e.g. 742 Evergreen Terr, Springfield" class="w-full bg-surface-900 border border-surface-700 rounded-xl pl-8 pr-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500" />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">Drop-Off Date & Time</label>
+              <div class="relative">
+                <i class="fa-regular fa-clock absolute left-3 top-3 text-slate-500 text-xs"></i>
+                <input type="text" id="dropTime" placeholder="e.g. Tomorrow 7:30 AM First Drop" class="w-full bg-surface-900 border border-surface-700 rounded-xl pl-8 pr-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500" />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">Supplier Rep Cell # <span class="text-slate-500 font-normal">(Optional)</span></label>
+              <div class="relative">
+                <i class="fa-solid fa-phone absolute left-3 top-3 text-slate-500 text-xs"></i>
+                <input type="tel" id="supplierPhone" placeholder="e.g. 555-123-4567" class="w-full bg-surface-900 border border-surface-700 rounded-xl pl-8 pr-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500" />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. Shingle Spec & Roof Dimensions -->
+        <section class="bg-surface-850 border border-surface-700/70 rounded-2xl p-4 sm:p-5 shadow-xl">
+          <div class="flex items-center justify-between mb-3.5 border-b border-surface-700/60 pb-2.5">
+            <h2 class="font-heading font-bold text-sm uppercase tracking-wider text-slate-200 flex items-center gap-2">
+              <i class="fa-solid fa-ruler-combined text-brand-500"></i>
+              2. Shingle Specifications & Measurements
+            </h2>
+            <span class="text-xs text-slate-400">Net SQ + Linear Feet</span>
+          </div>
+
+          <!-- Shingle Selection & Colors -->
+          <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 mb-4">
+            <div class="sm:col-span-6">
+              <label class="block text-xs font-medium text-slate-300 mb-1">Shingle Type / Line</label>
+              <select id="shingleBrand" class="w-full bg-surface-900 border border-surface-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                <option value="Owens Corning Duration">Owens Corning Duration</option>
+                <option value="CertainTeed Landmark">CertainTeed Landmark</option>
+                <option value="GAF Timberline HDZ">GAF Timberline HDZ</option>
+                <option value="TAMKO Titan XT">TAMKO Titan XT</option>
+                <option value="Malarkey Highlander NEX">Malarkey Highlander NEX</option>
+                <option value="Atlas Pinnacle Pristine">Atlas Pinnacle Pristine</option>
+                <option value="3-Tab 25yr Standard">3-Tab 25yr Standard</option>
+                <option value="CUSTOM">Custom Shingle Line...</option>
+              </select>
+              <input type="text" id="shingleCustom" placeholder="Type custom shingle..." class="hidden mt-2 w-full bg-surface-900 border border-surface-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-500" />
+            </div>
+
+            <div class="sm:col-span-3">
+              <label class="block text-xs font-medium text-slate-300 mb-1">Shingle Color</label>
+              <input type="text" id="shingleColor" placeholder="e.g. Estate Gray" class="w-full bg-surface-900 border border-surface-700 rounded-xl px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500" />
+            </div>
+
+            <div class="sm:col-span-3">
+              <label class="block text-xs font-medium text-slate-300 mb-1">Drip Edge Color</label>
+              <select id="dripColor" class="w-full bg-surface-900 border border-surface-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                <option value="White">White</option>
+                <option value="Brown">Brown</option>
+                <option value="Black">Black</option>
+                <option value="Bronze">Bronze</option>
+                <option value="Clay">Clay</option>
+                <option value="Mill Finish (Silver)">Mill Finish</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Numbers Grid -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <!-- Net Field SQ -->
+            <div class="bg-surface-900 p-3 rounded-xl border border-surface-700">
+              <div class="flex items-center justify-between mb-1">
+                <label class="text-xs font-bold text-slate-300">Field SQ</label>
+                <span class="text-[10px] text-brand-400 font-mono">Net</span>
+              </div>
+              <input type="number" step="0.1" min="0" id="inputSQ" placeholder="0.0" class="w-full bg-surface-800 border border-surface-600 rounded-lg px-2.5 py-1.5 text-base sm:text-lg font-bold text-white focus:outline-none focus:border-brand-500 text-center font-heading" />
+              
+              <div class="mt-2 flex items-center justify-between text-[11px] text-slate-400">
+                <span>Waste:</span>
+                <select id="wasteFactor" class="bg-surface-800 text-brand-400 font-semibold rounded px-1.5 py-0.5 border border-surface-700 text-xs">
+                  <option value="1.10">10%</option>
+                  <option value="1.12" selected>12%</option>
+                  <option value="1.15">15%</option>
+                  <option value="1.00">0%</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Ridge LF -->
+            <div class="bg-surface-900 p-3 rounded-xl border border-surface-700">
+              <div class="flex items-center justify-between mb-1">
+                <label class="text-xs font-bold text-slate-300">Ridges/Hips</label>
+                <span class="text-[10px] text-slate-400 font-mono">LF</span>
+              </div>
+              <input type="number" min="0" id="inputRidge" placeholder="0" class="w-full bg-surface-800 border border-surface-600 rounded-lg px-2.5 py-1.5 text-base sm:text-lg font-bold text-white focus:outline-none focus:border-brand-500 text-center font-heading" />
+              <p class="mt-2 text-[10px] text-slate-500 text-center">Ridge Cap & Vent</p>
+            </div>
+
+            <!-- Edges LF -->
+            <div class="bg-surface-900 p-3 rounded-xl border border-surface-700">
+              <div class="flex items-center justify-between mb-1">
+                <label class="text-xs font-bold text-slate-300">Edges (LF)</label>
+                <span class="text-[10px] text-slate-400 font-mono">LF</span>
+              </div>
+              <input type="number" min="0" id="inputEdge" placeholder="0" class="w-full bg-surface-800 border border-surface-600 rounded-lg px-2.5 py-1.5 text-base sm:text-lg font-bold text-white focus:outline-none focus:border-brand-500 text-center font-heading" />
+              <p class="mt-2 text-[10px] text-slate-500 text-center">Eaves & Rakes</p>
+            </div>
+
+            <!-- Valleys LF -->
+            <div class="bg-surface-900 p-3 rounded-xl border border-surface-700">
+              <div class="flex items-center justify-between mb-1">
+                <label class="text-xs font-bold text-slate-300">Valleys</label>
+                <span class="text-[10px] text-slate-400 font-mono">LF</span>
+              </div>
+              <input type="number" min="0" id="inputValley" placeholder="0" class="w-full bg-surface-800 border border-surface-600 rounded-lg px-2.5 py-1.5 text-base sm:text-lg font-bold text-white focus:outline-none focus:border-brand-500 text-center font-heading" />
+              <p class="mt-2 text-[10px] text-slate-500 text-center">Ice & Water runs</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. Special Accessories -->
+        <section class="bg-surface-850 border border-surface-700/70 rounded-2xl p-4 sm:p-5 shadow-xl">
+          <div class="flex items-center justify-between mb-3.5 border-b border-surface-700/60 pb-2.5">
+            <h2 class="font-heading font-bold text-sm uppercase tracking-wider text-slate-200 flex items-center gap-2">
+              <i class="fa-solid fa-boxes-stacked text-brand-500"></i>
+              3. Special Things / Accessories
+            </h2>
+            <span class="text-xs text-slate-400">Added to bottom of text list</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="accessoriesList">
+            <!-- Pipe Boots 1.5 - 3 -->
+            <div class="bg-surface-900/80 p-3 rounded-xl border border-surface-700 flex items-center justify-between">
+              <div>
+                <p class="text-xs font-semibold text-white">Pipe Boot (1.5" - 3")</p>
+                <p class="text-[11px] text-slate-400">Standard plumbing flashings</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button type="button" class="qty-btn w-7 h-7 rounded bg-surface-800 hover:bg-surface-700 text-slate-300 font-bold" data-action="dec" data-id="pbSmall">-</button>
+                <input type="number" id="pbSmall" value="0" min="0" class="special-qty w-10 text-center bg-transparent font-bold text-sm text-white" />
+                <button type="button" class="qty-btn w-7 h-7 rounded bg-surface-800 hover:bg-surface-700 text-slate-300 font-bold" data-action="inc" data-id="pbSmall">+</button>
+              </div>
+            </div>
+
+            <!-- Pipe Boots 3 - 4 -->
+            <div class="bg-surface-900/80 p-3 rounded-xl border border-surface-700 flex items-center justify-between">
+              <div>
+                <p class="text-xs font-semibold text-white">Pipe Boot (3" - 4")</p>
+                <p class="text-[11px] text-slate-400">Large soil pipe flashings</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button type="button" class="qty-btn w-7 h-7 rounded bg-surface-800 hover:bg-surface-700 text-slate-300 font-bold" data-action="dec" data-id="pbLarge">-</button>
+                <input type="number" id="pbLarge" value="0" min="0" class="special-qty w-10 text-center bg-transparent font-bold text-sm text-white" />
+                <button type="button" class="qty-btn w-7 h-7 rounded bg-surface-800 hover:bg-surface-700 text-slate-300 font-bold" data-action="inc" data-id="pbLarge">+</button>
+              </div>
+            </div>
+
+            <!-- Box / Turtle Vents -->
+            <div class="bg-surface-900/80 p-3 rounded-xl border border-surface-700 flex items-center justify-between">
+              <div>
+                <p class="text-xs font-semibold text-white">Box / Turtle Vents</p>
+                <p class="text-[11px] text-slate-400">Off-ridge static louvers (pcs)</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button type="button" class="qty-btn w-7 h-7 rounded bg-surface-800 hover:bg-surface-700 text-slate-300 font-bold" data-action="dec" data-id="boxVents">-</button>
+                <input type="number" id="boxVents" value="0" min="0" class="special-qty w-10 text-center bg-transparent font-bold text-sm text-white" />
+                <button type="button" class="qty-btn w-7 h-7 rounded bg-surface-800 hover:bg-surface-700 text-slate-300 font-bold" data-action="inc" data-id="boxVents">+</button>
+              </div>
+            </div>
+
+            <!-- Step Flashing -->
+            <div class="bg-surface-900/80 p-3 rounded-xl border border-surface-700 flex items-center justify-between">
+              <div>
+                <p class="text-xs font-semibold text-white">Step Flashing</p>
+                <p class="text-[11px] text-slate-400">Wall & dormer metal (bundles)</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button type="button" class="qty-btn w-7 h-7 rounded bg-surface-800 hover:bg-surface-700 text-slate-300 font-bold" data-action="dec" data-id="stepFlashing">-</button>
+                <input type="number" id="stepFlashing" value="0" min="0" class="special-qty w-10 text-center bg-transparent font-bold text-sm text-white" />
+                <button type="button" class="qty-btn w-7 h-7 rounded bg-surface-800 hover:bg-surface-700 text-slate-300 font-bold" data-action="inc" data-id="stepFlashing">+</button>
+              </div>
+            </div>
+
+            <!-- Roofing Cement / Mastic -->
+            <div class="bg-surface-900/80 p-3 rounded-xl border border-surface-700 flex items-center justify-between">
+              <div>
+                <p class="text-xs font-semibold text-white">Mastic / Roof Cement</p>
+                <p class="text-[11px] text-slate-400">10oz tubes or cans</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button type="button" class="qty-btn w-7 h-7 rounded bg-surface-800 hover:bg-surface-700 text-slate-300 font-bold" data-action="dec" data-id="masticTubes">-</button>
+                <input type="number" id="masticTubes" value="0" min="0" class="special-qty w-10 text-center bg-transparent font-bold text-sm text-white" />
+                <button type="button" class="qty-btn w-7 h-7 rounded bg-surface-800 hover:bg-surface-700 text-slate-300 font-bold" data-action="inc" data-id="masticTubes">+</button>
+              </div>
+            </div>
+
+            <!-- Valley Metal -->
+            <div class="bg-surface-900/80 p-3 rounded-xl border border-surface-700 flex items-center justify-between">
+              <div>
+                <p class="text-xs font-semibold text-white">W-Valley Metal (10ft)</p>
+                <p class="text-[11px] text-slate-400">Pre-bent closed/open metal</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button type="button" class="qty-btn w-7 h-7 rounded bg-surface-800 hover:bg-surface-700 text-slate-300 font-bold" data-action="dec" data-id="valleyMetal">-</button>
+                <input type="number" id="valleyMetal" value="0" min="0" class="special-qty w-10 text-center bg-transparent font-bold text-sm text-white" />
+                <button type="button" class="qty-btn w-7 h-7 rounded bg-surface-800 hover:bg-surface-700 text-slate-300 font-bold" data-action="inc" data-id="valleyMetal">+</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Custom Additional Item Input -->
+          <div class="mt-3.5 pt-3 border-t border-surface-700/60 flex flex-col sm:flex-row gap-2">
+            <input type="text" id="customItemName" placeholder="Add custom item (e.g. 1/2in OSB Plywood, Chimney Kit)" class="flex-1 bg-surface-900 border border-surface-700 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-500" />
+            <div class="flex gap-2">
+              <input type="number" id="customItemQty" placeholder="Qty" value="1" min="1" class="w-16 bg-surface-900 border border-surface-700 rounded-xl px-2 py-2 text-xs text-center text-white focus:outline-none focus:border-brand-500" />
+              <button type="button" id="btnAddCustomItem" class="px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap">
+                <i class="fa-solid fa-plus"></i> Add
+              </button>
+            </div>
+          </div>
+
+          <div id="customItemsContainer" class="mt-2 space-y-1.5"></div>
+        </section>
+      </div>
+
+      <!-- RIGHT COLUMN: Calculated Materials List & Live SMS Card -->
+      <div class="lg:col-span-5 space-y-5">
+
+        <!-- Materials Table in EXACT order -->
+        <div class="bg-surface-850 border border-brand-500/30 rounded-2xl p-4 sm:p-5 shadow-2xl relative">
+          <div class="flex items-center justify-between mb-3 border-b border-surface-700/60 pb-3">
+            <div>
+              <h2 class="font-heading font-bold text-base text-white tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-list-ol text-brand-500"></i>
+                Supply Order List
+              </h2>
+              <p class="text-[11px] text-slate-400">Order: Shingle (SQ) → Ridge Cap → Starter → Supplies</p>
+            </div>
+            <span id="sqBadge" class="bg-brand-500/15 border border-brand-500/40 text-brand-400 font-mono text-xs px-2.5 py-1 rounded-full font-bold">0.0 SQ</span>
+          </div>
+
+          <!-- Line items in EXACT requested sequence -->
+          <div class="space-y-1.5 text-xs max-h-[380px] overflow-y-auto pr-1" id="calculatedList">
+            <!-- Dynamically populated rows in exact sequence -->
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="mt-4 pt-3.5 border-t border-surface-700/80 space-y-2">
+            <button id="btnSendSMS" class="w-full py-3.5 px-4 bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white font-bold rounded-xl shadow-lg shadow-brand-500/25 flex items-center justify-center gap-2 text-sm sm:text-base transition active:scale-[0.99]">
+              <i class="fa-solid fa-paper-plane"></i>
+              <span>Send Text Directly to Supplier</span>
+            </button>
+
+            <div class="grid grid-cols-2 gap-2">
+              <button id="btnCopyText" class="py-2.5 px-3 bg-surface-800 hover:bg-surface-700 border border-surface-600 text-slate-200 rounded-xl font-semibold text-xs transition flex items-center justify-center gap-1.5">
+                <i class="fa-regular fa-copy text-brand-400"></i>
+                <span>Copy Text List</span>
+              </button>
+              <button id="btnShareWhatsApp" class="py-2.5 px-3 bg-[#128C7E]/20 hover:bg-[#128C7E]/30 border border-[#128C7E]/40 text-emerald-400 rounded-xl font-semibold text-xs transition flex items-center justify-center gap-1.5">
+                <i class="fa-brands fa-whatsapp text-emerald-400"></i>
+                <span>WhatsApp / Share</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live SMS Preview (Clean Plain Text for Texting) -->
+        <div class="bg-surface-900 border border-surface-700/80 rounded-2xl p-4 shadow-inner">
+          <div class="flex items-center justify-between mb-2 pb-1 border-b border-surface-800">
+            <span class="text-[11px] font-heading font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+              <i class="fa-solid fa-message text-brand-500"></i> Formatted Text Preview
+            </span>
+            <span class="text-[10px] text-slate-500">Shingle listed in SQ only</span>
+          </div>
+
+          <pre id="smsRawPreview" class="bg-[#040813] rounded-xl p-3 border border-surface-800/80 font-mono text-xs text-emerald-400/90 whitespace-pre-wrap select-all max-h-64 overflow-y-auto leading-relaxed">Fill in job info to view text message.</pre>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Yields & Coverage Settings Modal -->
+  <div id="yieldsModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-surface-850 border border-surface-700 rounded-2xl w-full max-w-lg p-5 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-surface-700 pb-3">
+        <h3 class="font-heading font-bold text-lg text-white flex items-center gap-2">
+          <i class="fa-solid fa-sliders text-brand-500"></i>
+          Material Coverage Settings
+        </h3>
+        <button id="btnCloseYields" class="text-slate-400 hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <p class="text-xs text-slate-400">
+        Adjust these yields to match your regional RP branch packaging.
+      </p>
+
+      <div class="space-y-2.5 text-xs">
+        <div class="flex items-center justify-between bg-surface-900 p-2.5 rounded-lg border border-surface-700">
+          <div>
+            <span class="font-semibold text-slate-200">Ridge Cap Bundles Yield</span>
+            <p class="text-[11px] text-slate-400">Linear feet per bundle (~31 LF)</p>
+          </div>
+          <input type="number" id="rateRidgeCap" value="31" min="1" class="w-16 bg-surface-800 text-center font-bold text-white rounded p-1 border border-surface-600" />
+        </div>
+
+        <div class="flex items-center justify-between bg-surface-900 p-2.5 rounded-lg border border-surface-700">
+          <div>
+            <span class="font-semibold text-slate-200">Starter Shingles Yield</span>
+            <p class="text-[11px] text-slate-400">Linear feet per bundle (~105 LF)</p>
+          </div>
+          <input type="number" id="rateStarter" value="105" min="1" class="w-16 bg-surface-800 text-center font-bold text-white rounded p-1 border border-surface-600" />
+        </div>
+
+        <div class="flex items-center justify-between bg-surface-900 p-2.5 rounded-lg border border-surface-700">
+          <div>
+            <span class="font-semibold text-slate-200">Synthetic Underlayment</span>
+            <p class="text-[11px] text-slate-400">SQ coverage per roll (~10 SQ)</p>
+          </div>
+          <input type="number" id="rateSynthetic" value="10" min="1" class="w-16 bg-surface-800 text-center font-bold text-white rounded p-1 border border-surface-600" />
+        </div>
+
+        <div class="flex items-center justify-between bg-surface-900 p-2.5 rounded-lg border border-surface-700">
+          <div>
+            <span class="font-semibold text-slate-200">Ice & Water Shield</span>
+            <p class="text-[11px] text-slate-400">Linear feet per 2 SQ roll (~65-66 LF)</p>
+          </div>
+          <input type="number" id="rateIceWater" value="65" min="1" class="w-16 bg-surface-800 text-center font-bold text-white rounded p-1 border border-surface-600" />
+        </div>
+
+        <div class="flex items-center justify-between bg-surface-900 p-2.5 rounded-lg border border-surface-700">
+          <div>
+            <span class="font-semibold text-slate-200">Hand Bang Cap Nails</span>
+            <p class="text-[11px] text-slate-400">SQ coverage per box (~35 SQ)</p>
+          </div>
+          <input type="number" id="rateCapNailsSQ" value="35" min="5" class="w-16 bg-surface-800 text-center font-bold text-white rounded p-1 border border-surface-600" />
+        </div>
+
+        <div class="flex items-center justify-between bg-surface-900 p-2.5 rounded-lg border border-surface-700">
+          <div>
+            <span class="font-semibold text-slate-200">Ridge Vent</span>
+            <p class="text-[11px] text-slate-400">Linear feet per roll or stick pack (~20 LF)</p>
+          </div>
+          <input type="number" id="rateRidgeVent" value="20" min="1" class="w-16 bg-surface-800 text-center font-bold text-white rounded p-1 border border-surface-600" />
+        </div>
+
+        <div class="flex items-center justify-between bg-surface-900 p-2.5 rounded-lg border border-surface-700">
+          <div>
+            <span class="font-semibold text-slate-200">Drip Edge Box LF</span>
+            <p class="text-[11px] text-slate-400">10-ft pieces per carton (10 pcs = 100 LF)</p>
+          </div>
+          <input type="number" id="rateDripEdgeBoxLF" value="100" min="10" class="w-16 bg-surface-800 text-center font-bold text-white rounded p-1 border border-surface-600" />
+        </div>
+
+        <div class="flex items-center justify-between bg-surface-900 p-2.5 rounded-lg border border-surface-700">
+          <div>
+            <span class="font-semibold text-slate-200">1-1/4" Coil Nails Yield</span>
+            <p class="text-[11px] text-slate-400">SQ coverage per box (~20-25 SQ)</p>
+          </div>
+          <input type="number" id="rateNailsSQ" value="22" min="5" class="w-16 bg-surface-800 text-center font-bold text-white rounded p-1 border border-surface-600" />
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-surface-700 flex justify-end gap-2">
+        <button id="btnResetYields" class="px-3 py-1.5 text-xs bg-surface-800 hover:bg-surface-700 text-slate-300 rounded-lg">Reset Defaults</button>
+        <button id="btnSaveYields" class="px-4 py-1.5 text-xs bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-lg">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 flex items-center gap-3 bg-surface-800 border border-brand-500 text-white px-4 py-3 rounded-xl shadow-2xl">
+    <i class="fa-solid fa-circle-check text-brand-400 text-lg"></i>
+    <span id="toastMsg" class="text-sm font-medium">Copied to clipboard!</span>
+  </div>
+
+  <script>
+    // State management
+    const state = {
+      overrides: {},
+      customItems: []
+    };
+
+    // Coverage defaults
+    const defaultRates = {
+      ridgeCap: 31,      // 31 LF / bundle
+      starter: 105,      // 105 LF / bundle
+      synthetic: 10,     // 10 SQ / roll
+      iceWater: 65,      // 65 LF / roll
+      capNailsSQ: 35,    // 35 SQ / box
+      ridgeVent: 20,     // 20 LF / roll or pack
+      dripEdgeBoxLF: 100,// 100 LF / box (10 pcs of 10ft)
+      nailsSQ: 22        // 22 SQ / box of 1-1/4" coil nails
+    };
+
+    let activeRates = { ...defaultRates };
+
+    // DOM Elements
+    const custName = document.getElementById('custName');
+    const jobAddress = document.getElementById('jobAddress');
+    const dropTime = document.getElementById('dropTime');
+    const supplierPhone = document.getElementById('supplierPhone');
+    const shingleBrand = document.getElementById('shingleBrand');
+    const shingleCustom = document.getElementById('shingleCustom');
+    const shingleColor = document.getElementById('shingleColor');
+    const dripColor = document.getElementById('dripColor');
+
+    const inputSQ = document.getElementById('inputSQ');
+    const wasteFactor = document.getElementById('wasteFactor');
+    const inputRidge = document.getElementById('inputRidge');
+    const inputEdge = document.getElementById('inputEdge');
+    const inputValley = document.getElementById('inputValley');
+
+    const calculatedList = document.getElementById('calculatedList');
+    const smsRawPreview = document.getElementById('smsRawPreview');
+    const sqBadge = document.getElementById('sqBadge');
+
+    // Event listeners
+    const triggerInputs = [
+      custName, jobAddress, dropTime, supplierPhone, shingleBrand, shingleCustom,
+      shingleColor, dripColor, inputSQ, wasteFactor, inputRidge, inputEdge, inputValley
+    ];
+
+    triggerInputs.forEach(el => {
+      el.addEventListener('input', () => recalculateAll());
+      el.addEventListener('change', () => recalculateAll());
+    });
+
+    shingleBrand.addEventListener('change', () => {
+      if (shingleBrand.value === 'CUSTOM') {
+        shingleCustom.classList.remove('hidden');
+        shingleCustom.focus();
+      } else {
+        shingleCustom.classList.add('hidden');
+      }
+      recalculateAll();
+    });
+
+    // Special items quantity buttons (+ / -)
+    document.querySelectorAll('.qty-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-id');
+        const action = btn.getAttribute('data-action');
+        const input = document.getElementById(id);
+        if (input) {
+          let val = parseInt(input.value) || 0;
+          val = action === 'inc' ? val + 1 : Math.max(0, val - 1);
+          input.value = val;
+          recalculateAll();
+        }
+      });
+    });
+
+    document.querySelectorAll('.special-qty').forEach(input => {
+      input.addEventListener('input', () => recalculateAll());
+    });
+
+    // Custom items handler
+    document.getElementById('btnAddCustomItem').addEventListener('click', () => {
+      const nameInput = document.getElementById('customItemName');
+      const qtyInput = document.getElementById('customItemQty');
+      const name = nameInput.value.trim();
+      const qty = parseInt(qtyInput.value) || 1;
+
+      if (!name) return;
+
+      state.customItems.push({ id: 'item_' + Date.now(), name, qty });
+      nameInput.value = '';
+      qtyInput.value = '1';
+      renderCustomItemsList();
+      recalculateAll();
+    });
+
+    function renderCustomItemsList() {
+      const container = document.getElementById('customItemsContainer');
+      container.innerHTML = '';
+
+      state.customItems.forEach(item => {
+        const row = document.createElement('div');
+        row.className = 'flex items-center justify-between bg-surface-900 px-3 py-1.5 rounded-lg border border-surface-700 text-xs';
+        row.innerHTML = `
+          <span class="text-slate-200 font-medium">${item.name}</span>
+          <div class="flex items-center gap-2">
+            <span class="bg-brand-500/20 text-brand-400 font-mono font-bold px-2 py-0.5 rounded text-[11px]">${item.qty} pcs</span>
+            <button type="button" class="text-slate-500 hover:text-red-400 p-1" onclick="removeCustomItem('${item.id}')">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    window.removeCustomItem = function(id) {
+      state.customItems = state.customItems.filter(item => item.id !== id);
+      renderCustomItemsList();
+      recalculateAll();
+    };
+
+    function getOverride(key, defaultVal) {
+      if (state.overrides[key] !== undefined && state.overrides[key] !== null) {
+        return state.overrides[key];
+      }
+      return defaultVal;
+    }
+
+    // Core Calculation Logic
+    function recalculateAll() {
+      const netSQ = parseFloat(inputSQ.value) || 0;
+      const waste = parseFloat(wasteFactor.value) || 1.12;
+      const ridgeLF = parseFloat(inputRidge.value) || 0;
+      const edgeLF = parseFloat(inputEdge.value) || 0;
+      const valleyLF = parseFloat(inputValley.value) || 0;
+
+      // 1. Shingle Gross Squares (Rounded to nearest whole SQ or 0.5)
+      const rawGrossSQ = netSQ > 0 ? (netSQ * waste) : 0;
+      const orderGrossSQ = Math.ceil(rawGrossSQ); // Suppliers generally order rounded whole squares
+
+      sqBadge.textContent = netSQ > 0 
+        ? `${orderGrossSQ} SQ (${netSQ.toFixed(1)} Net)` 
+        : `0.0 SQ`;
+
+      // 2. Ridge Cap bundles (~31 LF / bundle)
+      const calcRidgeCapBundles = ridgeLF > 0 ? Math.ceil(ridgeLF / activeRates.ridgeCap) : 0;
+
+      // 3. Starter bundles (~105 LF / bundle)
+      const calcStarterBundles = edgeLF > 0 ? Math.ceil(edgeLF / activeRates.starter) : 0;
+
+      // 4. Synthetic Underlayment rolls (~10 SQ / roll)
+      const calcSyntheticRolls = orderGrossSQ > 0 ? Math.ceil(orderGrossSQ / activeRates.synthetic) : 0;
+
+      // 5. Ice & Water rolls (Valleys + ~60% eaves)
+      const iAndWLength = valleyLF + (edgeLF * 0.6);
+      const calcIceWaterRolls = (edgeLF > 0 || valleyLF > 0) 
+        ? Math.max(1, Math.ceil(iAndWLength / activeRates.iceWater)) 
+        : (orderGrossSQ > 8 ? 1 : 0);
+
+      // 6. Hand bang cap nails boxes (~35 SQ per box)
+      const calcCapNailsBoxes = orderGrossSQ > 0 ? Math.max(1, Math.ceil(orderGrossSQ / activeRates.capNailsSQ)) : 0;
+
+      // 7. Ridge vent rolls/packs (~20 LF / roll)
+      const calcRidgeVentRolls = ridgeLF > 0 ? Math.ceil(ridgeLF / activeRates.ridgeVent) : 0;
+
+      // 8. Drip edge boxes (100 LF per box)
+      const calcDripEdgeBoxes = edgeLF > 0 ? Math.ceil(edgeLF / activeRates.dripEdgeLF) : 0;
+
+      // 9. 1-1/4" Stinger coil nails boxes (~22 SQ per box)
+      const calcCoilNailsBoxes = orderGrossSQ > 0 ? Math.ceil(orderGrossSQ / activeRates.nailsSQ) : 0;
+
+      const selectedBrand = shingleBrand.value === 'CUSTOM' ? (shingleCustom.value || 'Custom Shingle') : shingleBrand.value;
+      const colorText = shingleColor.value.trim() ? shingleColor.value.trim() : 'Color TBD';
+      const dripColorText = dripColor.value;
+
+      /*
+        EXACT ORDER REQUIRED:
+        1) How many Sq Shingle & Type (SQ ONLY, NO BUNDLES)
+        2) How many bundles of ridge cap
+        3) How many bundles of starter
+        4) How many rolls of synthetic
+        5) How many rolls of Ice and water
+        6) How many boxes of hand bang cap nails
+        7) How many rolls of ridge vent
+        8) How many boxes of drip edge and what color
+        9) How many boxes of 1-1/4in stinger nails
+        10) Special things (Pipe boots, Box vents, Step flashing, etc.)
+      */
+      const orderedItems = [
+        {
+          key: 'shingles_sq',
+          title: `1. Shingles (In Squares)`,
+          itemText: `${selectedBrand} (${colorText})`,
+          qty: getOverride('shingles_sq', orderGrossSQ),
+          unit: 'SQ',
+          note: `Calculated from ${netSQ.toFixed(1)} net SQ + waste`
+        },
+        {
+          key: 'ridge_cap',
+          title: `2. Ridge Cap`,
+          itemText: `Ridge Cap (${selectedBrand.split(' ')[0]} match)`,
+          qty: getOverride('ridge_cap', calcRidgeCapBundles),
+          unit: 'bundles',
+          note: `${ridgeLF} LF ridge / ~${activeRates.ridgeCap} LF per bundle`
+        },
+        {
+          key: 'starter_strip',
+          title: `3. Starter Strip`,
+          itemText: `Starter Strip Shingles`,
+          qty: getOverride('starter_strip', calcStarterBundles),
+          unit: 'bundles',
+          note: `${edgeLF} LF edges / ~${activeRates.starter} LF per bundle`
+        },
+        {
+          key: 'synthetic',
+          title: `4. Synthetic Underlayment`,
+          itemText: `Synthetic Underlayment`,
+          qty: getOverride('synthetic', calcSyntheticRolls),
+          unit: 'rolls',
+          note: `~${activeRates.synthetic} SQ per roll`
+        },
+        {
+          key: 'ice_water',
+          title: `5. Ice & Water Shield`,
+          itemText: `Ice & Water Shield`,
+          qty: getOverride('ice_water', calcIceWaterRolls),
+          unit: 'rolls',
+          note: `Valleys + Eaves run (~${activeRates.iceWater} LF/roll)`
+        },
+        {
+          key: 'cap_nails',
+          title: `6. Cap Nails`,
+          itemText: `Hand bang cap nails`,
+          qty: getOverride('cap_nails', calcCapNailsBoxes),
+          unit: 'boxes',
+          note: `Underlayment round plastic cap nails`
+        },
+        {
+          key: 'ridge_vent',
+          title: `7. Ridge Vent`,
+          itemText: `Ridge Vent`,
+          qty: getOverride('ridge_vent', calcRidgeVentRolls),
+          unit: 'rolls',
+          note: `${ridgeLF} LF ridge / ~${activeRates.ridgeVent} LF per roll`
+        },
+        {
+          key: 'drip_edge',
+          title: `8. Drip Edge`,
+          itemText: `Drip edge - ${dripColorText}`,
+          qty: getOverride('drip_edge', calcDripEdgeBoxes),
+          unit: 'boxes',
+          note: `${edgeLF} LF edge (100 LF / box)`
+        },
+        {
+          key: 'stinger_nails',
+          title: `9. Stinger Nails`,
+          itemText: `1-1/4" stinger coil nails`,
+          qty: getOverride('stinger_nails', calcCoilNailsBoxes),
+          unit: 'boxes',
+          note: `Standard coil roofing nails`
+        }
+      ];
+
+      // 10. Special accessories
+      const pbSmallVal = parseInt(document.getElementById('pbSmall').value) || 0;
+      if (pbSmallVal > 0) {
+        orderedItems.push({ key: 'pbSmall', title: '10. Special Item', itemText: 'Pipe boots (1.5" - 3")', qty: pbSmallVal, unit: 'pcs', note: 'Standard vent pipe flashing' });
+      }
+
+      const pbLargeVal = parseInt(document.getElementById('pbLarge').value) || 0;
+      if (pbLargeVal > 0) {
+        orderedItems.push({ key: 'pbLarge', title: '10. Special Item', itemText: 'Pipe boots (3" - 4")', qty: pbLargeVal, unit: 'pcs', note: 'Large stack flashing' });
+      }
+
+      const boxVentsVal = parseInt(document.getElementById('boxVents').value) || 0;
+      if (boxVentsVal > 0) {
+        orderedItems.push({ key: 'boxVents', title: '10. Special Item', itemText: 'Box vents / Turtle vents', qty: boxVentsVal, unit: 'pcs', note: 'Static roof louvers' });
+      }
+
+      const stepFlashingVal = parseInt(document.getElementById('stepFlashing').value) || 0;
+      if (stepFlashingVal > 0) {
+        orderedItems.push({ key: 'stepFlashing', title: '10. Special Item', itemText: 'Step flashing', qty: stepFlashingVal, unit: 'bundles', note: 'Wall flashing metal' });
+      }
+
+      const masticVal = parseInt(document.getElementById('masticTubes').value) || 0;
+      if (masticVal > 0) {
+        orderedItems.push({ key: 'masticTubes', title: '10. Special Item', itemText: 'Mastic / Roof cement', qty: masticVal, unit: 'tubes', note: 'Sealant tubes' });
+      }
+
+      const valleyMetalVal = parseInt(document.getElementById('valleyMetal').value) || 0;
+      if (valleyMetalVal > 0) {
+        orderedItems.push({ key: 'valleyMetal', title: '10. Special Item', itemText: 'W-Valley metal (10ft)', qty: valleyMetalVal, unit: 'pcs', note: 'Valley flashing' });
+      }
+
+      state.customItems.forEach(item => {
+        orderedItems.push({
+          key: item.id,
+          title: '10. Special Item',
+          itemText: item.name,
+          qty: item.qty,
+          unit: 'pcs',
+          note: 'Contractor special request'
+        });
+      });
+
+      renderCalculatedList(orderedItems);
+      renderTextMessage(orderedItems, orderGrossSQ);
+    }
+
+    // Render interactive material list
+    function renderCalculatedList(items) {
+      calculatedList.innerHTML = '';
+
+      items.forEach((item, index) => {
+        const row = document.createElement('div');
+        row.className = 'flex items-center justify-between p-2.5 bg-surface-900/90 rounded-xl border border-surface-700/80 hover:border-brand-500/40 transition';
+        row.innerHTML = `
+          <div class="pr-2 flex-1">
+            <div class="text-xs font-semibold text-white flex items-center gap-1.5">
+              <span class="text-brand-400 font-bold">${index + 1}.</span>
+              <span>${item.itemText}</span>
+            </div>
+            <p class="text-[10px] text-slate-400">${item.note}</p>
+          </div>
+          <div class="flex items-center gap-1.5 flex-shrink-0">
+            <input type="number" min="0" value="${item.qty}" data-key="${item.key}" class="item-override-input w-14 bg-surface-800 border border-surface-600 rounded-lg text-center font-bold text-sm text-brand-400 py-1 focus:outline-none focus:border-brand-500" />
+            <span class="text-[10px] text-slate-400 w-12 font-medium">${item.unit}</span>
+          </div>
+        `;
+        calculatedList.appendChild(row);
+      });
+
+      calculatedList.querySelectorAll('.item-override-input').forEach(input => {
+        input.addEventListener('change', (e) => {
+          const k = e.target.getAttribute('data-key');
+          const val = parseFloat(e.target.value) || 0;
+          state.overrides[k] = val;
+          recalculateAll();
+        });
+      });
+    }
+
+    // Render SMS Text exactly formatted for RP text messages
+    function renderTextMessage(items, grossSQ) {
+      const cName = custName.value.trim() || '[Customer Name]';
+      const address = jobAddress.value.trim() || '[Address]';
+      const timeDrop = dropTime.value.trim() || 'First Drop (Morning)';
+
+      let text = `Roofing Supply Order - RP\n`;
+      text += `Customer Name: ${cName}\n`;
+      text += `Address: ${address}\n`;
+      text += `Time for Drop off: ${timeDrop}\n\n`;
+      text += `Material List:\n`;
+
+      items.forEach(item => {
+        if (item.qty > 0) {
+          // Exactly formatted: "32 SQ Owens Corning Duration (Estate Gray)"
+          if (item.key === 'shingles_sq') {
+            text += `• ${item.qty} ${item.unit} ${item.itemText}\n`;
+          } else {
+            text += `• ${item.qty} ${item.unit} ${item.itemText}\n`;
+          }
+        }
+      });
+
+      text += `\nPlease reply to confirm order and drop off schedule. Thank you!`;
+
+      smsRawPreview.textContent = text;
+    }
+
+    // Native SMS Sender with optional Rep phone number
+    document.getElementById('btnSendSMS').addEventListener('click', () => {
+      const repPhone = supplierPhone.value.trim().replace(/[^0-9+]/g, '');
+      const body = encodeURIComponent(smsRawPreview.textContent);
+      
+      // If phone is provided, target it, otherwise open blank recipient
+      if (repPhone) {
+        window.location.href = `sms:${repPhone}?&body=${body}`;
+      } else {
+        window.location.href = `sms:?&body=${body}`;
+      }
+    });
+
+    // WhatsApp Sharing
+    document.getElementById('btnShareWhatsApp').addEventListener('click', () => {
+      const repPhone = supplierPhone.value.trim().replace(/[^0-9]/g, '');
+      const body = encodeURIComponent(smsRawPreview.textContent);
+      if (repPhone) {
+        window.open(`https://api.whatsapp.com/send?phone=${repPhone}&text=${body}`, '_blank');
+      } else {
+        window.open(`https://api.whatsapp.com/send?text=${body}`, '_blank');
+      }
+    });
+
+    // Copy to clipboard
+    document.getElementById('btnCopyText').addEventListener('click', () => {
+      const text = smsRawPreview.textContent;
+      const tempArea = document.createElement('textarea');
+      tempArea.value = text;
+      document.body.appendChild(tempArea);
+      tempArea.select();
+      try {
+        document.execCommand('copy');
+        showToast('Order text copied to clipboard!');
+      } catch (e) {
+        showToast('Please manually copy the text preview.');
+      }
+      document.body.removeChild(tempArea);
+    });
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toastMsg');
+      toastMsg.textContent = msg;
+      toast.classList.remove('translate-y-24', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      setTimeout(() => {
+        toast.classList.add('translate-y-24', 'opacity-0');
+        toast.classList.remove('translate-y-0', 'opacity-100');
+      }, 2500);
+    }
+
+    // Reset Form
+    document.getElementById('btnReset').addEventListener('click', () => {
+      custName.value = '';
+      jobAddress.value = '';
+      dropTime.value = '';
+      shingleColor.value = '';
+      inputSQ.value = '';
+      inputRidge.value = '';
+      inputEdge.value = '';
+      inputValley.value = '';
+      document.querySelectorAll('.special-qty').forEach(el => el.value = '0');
+      state.overrides = {};
+      state.customItems = [];
+      renderCustomItemsList();
+      recalculateAll();
+      showToast('Form reset.');
+    });
+
+    // Coverage settings modal
+    const yieldsModal = document.getElementById('yieldsModal');
+    document.getElementById('btnOpenYields').addEventListener('click', () => {
+      document.getElementById('rateRidgeCap').value = activeRates.ridgeCap;
+      document.getElementById('rateStarter').value = activeRates.starter;
+      document.getElementById('rateSynthetic').value = activeRates.synthetic;
+      document.getElementById('rateIceWater').value = activeRates.iceWater;
+      document.getElementById('rateCapNailsSQ').value = activeRates.capNailsSQ;
+      document.getElementById('rateRidgeVent').value = activeRates.ridgeVent;
+      document.getElementById('rateDripEdgeBoxLF').value = activeRates.dripEdgeLF || activeRates.dripEdgeBoxLF;
+      document.getElementById('rateNailsSQ').value = activeRates.nailsSQ;
+      yieldsModal.classList.remove('hidden');
+    });
+
+    document.getElementById('btnCloseYields').addEventListener('click', () => {
+      yieldsModal.classList.add('hidden');
+    });
+
+    document.getElementById('btnSaveYields').addEventListener('click', () => {
+      activeRates.ridgeCap = parseFloat(document.getElementById('rateRidgeCap').value) || defaultRates.ridgeCap;
+      activeRates.starter = parseFloat(document.getElementById('rateStarter').value) || defaultRates.starter;
+      activeRates.synthetic = parseFloat(document.getElementById('rateSynthetic').value) || defaultRates.synthetic;
+      activeRates.iceWater = parseFloat(document.getElementById('rateIceWater').value) || defaultRates.iceWater;
+      activeRates.capNailsSQ = parseFloat(document.getElementById('rateCapNailsSQ').value) || defaultRates.capNailsSQ;
+      activeRates.ridgeVent = parseFloat(document.getElementById('rateRidgeVent').value) || defaultRates.ridgeVent;
+      activeRates.dripEdgeLF = parseFloat(document.getElementById('rateDripEdgeBoxLF').value) || defaultRates.dripEdgeBoxLF;
+      activeRates.nailsSQ = parseFloat(document.getElementById('rateNailsSQ').value) || defaultRates.nailsSQ;
+      yieldsModal.classList.add('hidden');
+      recalculateAll();
+      showToast('Coverage settings updated!');
+    });
+
+    document.getElementById('btnResetYields').addEventListener('click', () => {
+      activeRates = { ...defaultRates };
+      document.getElementById('rateRidgeCap').value = activeRates.ridgeCap;
+      document.getElementById('rateStarter').value = activeRates.starter;
+      document.getElementById('rateSynthetic').value = activeRates.synthetic;
+      document.getElementById('rateIceWater').value = activeRates.iceWater;
+      document.getElementById('rateCapNailsSQ').value = activeRates.capNailsSQ;
+      document.getElementById('rateRidgeVent').value = activeRates.ridgeVent;
+      document.getElementById('rateDripEdgeBoxLF').value = activeRates.dripEdgeBoxLF;
+      document.getElementById('rateNailsSQ').value = activeRates.nailsSQ;
+    });
+
+    // Default time suggestion
+    dropTime.value = "Tomorrow 7:30 AM First Drop";
+
+    // Initial calculation
+    recalculateAll();
+  </script>
+</body>
+</html>
