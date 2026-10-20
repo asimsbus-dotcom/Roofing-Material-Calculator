@@ -161,21 +161,17 @@
             <div class="sm:col-span-6">
               <label class="block text-xs font-medium text-slate-300 mb-1">Shingle Type / Line</label>
               <select id="shingleBrand" class="w-full bg-surface-900 border border-surface-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
-                <option value="Owens Corning Duration">Owens Corning Duration</option>
                 <option value="CertainTeed Landmark">CertainTeed Landmark</option>
-                <option value="GAF Timberline HDZ">GAF Timberline HDZ</option>
-                <option value="TAMKO Titan XT">TAMKO Titan XT</option>
-                <option value="Malarkey Highlander NEX">Malarkey Highlander NEX</option>
-                <option value="Atlas Pinnacle Pristine">Atlas Pinnacle Pristine</option>
-                <option value="3-Tab 25yr Standard">3-Tab 25yr Standard</option>
-                <option value="CUSTOM">Custom Shingle Line...</option>
+                <option value="CertainTeed Landmark Pro">CertainTeed Landmark Pro</option>
+                <option value="CertainTeed Northgate ClimateFlex">CertainTeed Northgate ClimateFlex</option>
+                <option value="CUSTOM">Other (Custom)...</option>
               </select>
               <input type="text" id="shingleCustom" placeholder="Type custom shingle..." class="hidden mt-2 w-full bg-surface-900 border border-surface-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-500" />
             </div>
 
             <div class="sm:col-span-3">
               <label class="block text-xs font-medium text-slate-300 mb-1">Shingle Color</label>
-              <input type="text" id="shingleColor" placeholder="e.g. Estate Gray" class="w-full bg-surface-900 border border-surface-700 rounded-xl px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500" />
+              <input type="text" id="shingleColor" placeholder="e.g. Moire Black" class="w-full bg-surface-900 border border-surface-700 rounded-xl px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500" />
             </div>
 
             <div class="sm:col-span-3">
@@ -222,14 +218,14 @@
               <p class="mt-2 text-[10px] text-slate-500 text-center">Ridge Cap & Vent</p>
             </div>
 
-            <!-- Edges LF -->
+            <!-- Perimeter / Drip Edge LF -->
             <div class="bg-surface-900 p-3 rounded-xl border border-surface-700">
               <div class="flex items-center justify-between mb-1">
-                <label class="text-xs font-bold text-slate-300">Edges (LF)</label>
-                <span class="text-[10px] text-slate-400 font-mono">LF</span>
+                <label class="text-xs font-bold text-slate-300">Perimeter</label>
+                <span class="text-[10px] text-brand-400 font-mono">Total LF</span>
               </div>
               <input type="number" min="0" id="inputEdge" placeholder="0" class="w-full bg-surface-800 border border-surface-600 rounded-lg px-2.5 py-1.5 text-base sm:text-lg font-bold text-white focus:outline-none focus:border-brand-500 text-center font-heading" />
-              <p class="mt-2 text-[10px] text-slate-500 text-center">Eaves & Rakes</p>
+              <p class="mt-2 text-[10px] text-slate-500 text-center leading-tight">Eaves + Rakes (Drip Edge)</p>
             </div>
 
             <!-- Valleys LF -->
@@ -366,9 +362,7 @@
           </div>
 
           <!-- Line items in EXACT requested sequence -->
-          <div class="space-y-1.5 text-xs max-h-[380px] overflow-y-auto pr-1" id="calculatedList">
-            <!-- Dynamically populated rows in exact sequence -->
-          </div>
+          <div class="space-y-1.5 text-xs max-h-[380px] overflow-y-auto pr-1" id="calculatedList"></div>
 
           <!-- Quick Actions -->
           <div class="mt-4 pt-3.5 border-t border-surface-700/80 space-y-2">
@@ -496,7 +490,7 @@
     </div>
   </div>
 
-  <!-- Toast -->
+  <!-- Toast Notification -->
   <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 flex items-center gap-3 bg-surface-800 border border-brand-500 text-white px-4 py-3 rounded-xl shadow-2xl">
     <i class="fa-solid fa-circle-check text-brand-400 text-lg"></i>
     <span id="toastMsg" class="text-sm font-medium">Copied to clipboard!</span>
@@ -511,10 +505,10 @@
 
     // Coverage defaults
     const defaultRates = {
-      ridgeCap: 31,      // 31 LF / bundle
-      starter: 105,      // 105 LF / bundle
-      synthetic: 10,     // 10 SQ / roll
-      iceWater: 65,      // 65 LF / roll
+      ridgeCap: 31,      // 31 LF / bundle (Shadow Ridge)
+      starter: 105,      // 105 LF / bundle (SwiftStart)
+      synthetic: 10,     // 10 SQ / roll (RoofRunner/DiamondDeck)
+      iceWater: 65,      // 65 LF / roll (WinterGuard)
       capNailsSQ: 35,    // 35 SQ / box
       ridgeVent: 20,     // 20 LF / roll or pack
       dripEdgeBoxLF: 100,// 100 LF / box (10 pcs of 10ft)
@@ -637,12 +631,12 @@
       const netSQ = parseFloat(inputSQ.value) || 0;
       const waste = parseFloat(wasteFactor.value) || 1.12;
       const ridgeLF = parseFloat(inputRidge.value) || 0;
-      const edgeLF = parseFloat(inputEdge.value) || 0;
+      const perimeterLF = parseFloat(inputEdge.value) || 0; // Total perimeter (eaves + rakes)
       const valleyLF = parseFloat(inputValley.value) || 0;
 
-      // 1. Shingle Gross Squares (Rounded to nearest whole SQ or 0.5)
+      // 1. Shingle Gross Squares (Rounded whole SQ)
       const rawGrossSQ = netSQ > 0 ? (netSQ * waste) : 0;
-      const orderGrossSQ = Math.ceil(rawGrossSQ); // Suppliers generally order rounded whole squares
+      const orderGrossSQ = Math.ceil(rawGrossSQ);
 
       sqBadge.textContent = netSQ > 0 
         ? `${orderGrossSQ} SQ (${netSQ.toFixed(1)} Net)` 
@@ -651,15 +645,15 @@
       // 2. Ridge Cap bundles (~31 LF / bundle)
       const calcRidgeCapBundles = ridgeLF > 0 ? Math.ceil(ridgeLF / activeRates.ridgeCap) : 0;
 
-      // 3. Starter bundles (~105 LF / bundle)
-      const calcStarterBundles = edgeLF > 0 ? Math.ceil(edgeLF / activeRates.starter) : 0;
+      // 3. Starter bundles (~105 LF / bundle on perimeter)
+      const calcStarterBundles = perimeterLF > 0 ? Math.ceil(perimeterLF / activeRates.starter) : 0;
 
       // 4. Synthetic Underlayment rolls (~10 SQ / roll)
       const calcSyntheticRolls = orderGrossSQ > 0 ? Math.ceil(orderGrossSQ / activeRates.synthetic) : 0;
 
-      // 5. Ice & Water rolls (Valleys + ~60% eaves)
-      const iAndWLength = valleyLF + (edgeLF * 0.6);
-      const calcIceWaterRolls = (edgeLF > 0 || valleyLF > 0) 
+      // 5. Ice & Water rolls (Valleys + ~50% eaves perimeter)
+      const iAndWLength = valleyLF + (perimeterLF * 0.5);
+      const calcIceWaterRolls = (perimeterLF > 0 || valleyLF > 0) 
         ? Math.max(1, Math.ceil(iAndWLength / activeRates.iceWater)) 
         : (orderGrossSQ > 8 ? 1 : 0);
 
@@ -669,8 +663,8 @@
       // 7. Ridge vent rolls/packs (~20 LF / roll)
       const calcRidgeVentRolls = ridgeLF > 0 ? Math.ceil(ridgeLF / activeRates.ridgeVent) : 0;
 
-      // 8. Drip edge boxes (100 LF per box)
-      const calcDripEdgeBoxes = edgeLF > 0 ? Math.ceil(edgeLF / activeRates.dripEdgeLF) : 0;
+      // 8. Drip edge boxes (Perimeter of full roof, 100 LF per box)
+      const calcDripEdgeBoxes = perimeterLF > 0 ? Math.ceil(perimeterLF / activeRates.dripEdgeBoxLF) : 0;
 
       // 9. 1-1/4" Stinger coil nails boxes (~22 SQ per box)
       const calcCoilNailsBoxes = orderGrossSQ > 0 ? Math.ceil(orderGrossSQ / activeRates.nailsSQ) : 0;
@@ -704,7 +698,7 @@
         {
           key: 'ridge_cap',
           title: `2. Ridge Cap`,
-          itemText: `Ridge Cap (${selectedBrand.split(' ')[0]} match)`,
+          itemText: `Ridge Cap (${selectedBrand.includes('CertainTeed') ? 'CertainTeed' : selectedBrand.split(' ')[0]} match)`,
           qty: getOverride('ridge_cap', calcRidgeCapBundles),
           unit: 'bundles',
           note: `${ridgeLF} LF ridge / ~${activeRates.ridgeCap} LF per bundle`
@@ -715,7 +709,7 @@
           itemText: `Starter Strip Shingles`,
           qty: getOverride('starter_strip', calcStarterBundles),
           unit: 'bundles',
-          note: `${edgeLF} LF edges / ~${activeRates.starter} LF per bundle`
+          note: `${perimeterLF} LF perimeter / ~${activeRates.starter} LF per bundle`
         },
         {
           key: 'synthetic',
@@ -731,7 +725,7 @@
           itemText: `Ice & Water Shield`,
           qty: getOverride('ice_water', calcIceWaterRolls),
           unit: 'rolls',
-          note: `Valleys + Eaves run (~${activeRates.iceWater} LF/roll)`
+          note: `Valleys + Eaves runs (~${activeRates.iceWater} LF/roll)`
         },
         {
           key: 'cap_nails',
@@ -755,7 +749,7 @@
           itemText: `Drip edge - ${dripColorText}`,
           qty: getOverride('drip_edge', calcDripEdgeBoxes),
           unit: 'boxes',
-          note: `${edgeLF} LF edge (100 LF / box)`
+          note: `${perimeterLF} LF total perimeter (100 LF / box)`
         },
         {
           key: 'stinger_nails',
@@ -846,7 +840,7 @@
       });
     }
 
-    // Render SMS Text exactly formatted for RP text messages
+    // Render SMS Text formatted for RP text messages
     function renderTextMessage(items, grossSQ) {
       const cName = custName.value.trim() || '[Customer Name]';
       const address = jobAddress.value.trim() || '[Address]';
@@ -860,12 +854,7 @@
 
       items.forEach(item => {
         if (item.qty > 0) {
-          // Exactly formatted: "32 SQ Owens Corning Duration (Estate Gray)"
-          if (item.key === 'shingles_sq') {
-            text += `• ${item.qty} ${item.unit} ${item.itemText}\n`;
-          } else {
-            text += `• ${item.qty} ${item.unit} ${item.itemText}\n`;
-          }
+          text += `• ${item.qty} ${item.unit} ${item.itemText}\n`;
         }
       });
 
@@ -879,7 +868,6 @@
       const repPhone = supplierPhone.value.trim().replace(/[^0-9+]/g, '');
       const body = encodeURIComponent(smsRawPreview.textContent);
       
-      // If phone is provided, target it, otherwise open blank recipient
       if (repPhone) {
         window.location.href = `sms:${repPhone}?&body=${body}`;
       } else {
@@ -954,7 +942,7 @@
       document.getElementById('rateIceWater').value = activeRates.iceWater;
       document.getElementById('rateCapNailsSQ').value = activeRates.capNailsSQ;
       document.getElementById('rateRidgeVent').value = activeRates.ridgeVent;
-      document.getElementById('rateDripEdgeBoxLF').value = activeRates.dripEdgeLF || activeRates.dripEdgeBoxLF;
+      document.getElementById('rateDripEdgeBoxLF').value = activeRates.dripEdgeBoxLF;
       document.getElementById('rateNailsSQ').value = activeRates.nailsSQ;
       yieldsModal.classList.remove('hidden');
     });
@@ -970,7 +958,7 @@
       activeRates.iceWater = parseFloat(document.getElementById('rateIceWater').value) || defaultRates.iceWater;
       activeRates.capNailsSQ = parseFloat(document.getElementById('rateCapNailsSQ').value) || defaultRates.capNailsSQ;
       activeRates.ridgeVent = parseFloat(document.getElementById('rateRidgeVent').value) || defaultRates.ridgeVent;
-      activeRates.dripEdgeLF = parseFloat(document.getElementById('rateDripEdgeBoxLF').value) || defaultRates.dripEdgeBoxLF;
+      activeRates.dripEdgeBoxLF = parseFloat(document.getElementById('rateDripEdgeBoxLF').value) || defaultRates.dripEdgeBoxLF;
       activeRates.nailsSQ = parseFloat(document.getElementById('rateNailsSQ').value) || defaultRates.nailsSQ;
       yieldsModal.classList.add('hidden');
       recalculateAll();
@@ -990,7 +978,7 @@
     });
 
     // Default time suggestion
-    dropTime.value = "Tomorrow 7:30 AM First Drop";
+    dropTime.value = "Tomorrow 9:00 AM";
 
     // Initial calculation
     recalculateAll();
